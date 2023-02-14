@@ -20,8 +20,9 @@
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 # Makefile for mupen64plus-video-arachnoid
 
-# detect operation system
+# detect operating system
 UNAME ?= $(shell uname -s)
+OS := NONE
 ifeq ("$(UNAME)","Linux")
   OS = LINUX
   SO_EXTENSION = so
@@ -68,16 +69,14 @@ ifeq ("$(OS)","NONE")
   $(error OS type "$(UNAME)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
 endif
 
-SRCDIR = ../../src
-OBJDIR = _obj$(POSTFIX)
-
 # detect system architecture
 HOST_CPU ?= $(shell uname -m)
-NO_ASM ?= 1
+CPU := NONE
 ifneq ("$(filter x86_64 amd64,$(HOST_CPU))","")
   CPU := X86
   ifeq ("$(BITS)", "32")
     ARCH_DETECTED := 64BITS_32
+    PIC ?= 0
   else
     ARCH_DETECTED := 64BITS
     PIC ?= 1
@@ -86,6 +85,7 @@ endif
 ifneq ("$(filter pentium i%86,$(HOST_CPU))","")
   CPU := X86
   ARCH_DETECTED := 32BITS
+  PIC ?= 0
 endif
 ifneq ("$(filter ppc macppc socppc powerpc,$(HOST_CPU))","")
   CPU := PPC
@@ -109,6 +109,12 @@ ifneq ("$(filter arm%,$(HOST_CPU))","")
     $(warning Architecture "$(HOST_CPU)" not officially supported.')
   endif
 endif
+ifeq ("$(CPU)","NONE")
+  $(error CPU type "$(HOST_CPU)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
+endif
+
+SRCDIR = ../../src
+OBJDIR = _obj$(POSTFIX)
 
 # base CFLAGS, LDLIBS, and LDFLAGS
 OPTFLAGS ?= -O3 -flto
