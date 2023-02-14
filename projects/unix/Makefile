@@ -68,6 +68,9 @@ ifeq ("$(OS)","NONE")
   $(error OS type "$(UNAME)" not supported.  Please file bug report at 'https://github.com/mupen64plus/mupen64plus-core/issues')
 endif
 
+SRCDIR = ../../src
+OBJDIR = _obj$(POSTFIX)
+
 # detect system architecture
 HOST_CPU ?= $(shell uname -m)
 NO_ASM ?= 1
@@ -267,19 +270,12 @@ endif
 ifeq ($(PREFIX),)
   PREFIX := /usr/local
 endif
-ifeq ($(SHAREDIR),)
-  SHAREDIR := $(PREFIX)/share/mupen64plus
-endif
 ifeq ($(LIBDIR),)
   LIBDIR := $(PREFIX)/lib
 endif
 ifeq ($(PLUGINDIR),)
   PLUGINDIR := $(LIBDIR)/mupen64plus
 endif
-
-
-SRCDIR = ../../src
-OBJDIR = _obj$(POSTFIX)
 
 # list of source files to compile
 SOURCE = \
